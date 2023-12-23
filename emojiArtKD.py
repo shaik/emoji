@@ -63,7 +63,7 @@ def create_emoji_image(filepath, grid_width=32):
     start_time = time.time()
 
     with Image.open(filepath) as img:
-        img = img.resize((grid_width, int(grid_width * img.size[1] / img.size[0])), Image.Resampling.NEAREST)
+        img = img.resize((grid_width, int(grid_width * img.size[1] / img.size[0])), 0 ) # Image.Resampling.NEAREST
         img = img.convert("RGB")  # Convert to RGB format if not already
         emoji_html = "<div class='emoji-grid'>"
         for y in range(img.size[1]):
