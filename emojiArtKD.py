@@ -1,6 +1,7 @@
 # Main Flask application
 import os
 import time
+from io import BytesIO
 from werkzeug.utils import secure_filename
 from flask import Flask, request, render_template, send_from_directory
 from flask_limiter import Limiter
@@ -63,7 +64,7 @@ def create_emoji_image(filepath, grid_width=32):
     start_time = time.time()
 
     with Image.open(filepath) as img:
-        img = img.resize((grid_width, int(grid_width * img.size[1] / img.size[0])), 0 ) # Image.Resampling.NEAREST
+        # img = img.resize((grid_width, int(grid_width * img.size[1] / img.size[0])), 0 ) # Image.Resampling.NEAREST
         img = img.convert("RGB")  # Convert to RGB format if not already
         emoji_html = "<div class='emoji-grid'>"
         for y in range(img.size[1]):
@@ -102,10 +103,17 @@ def upload_file():
     if request.method == 'POST' and form.validate_on_submit():
         file = form.file.data
         grid_width = int(form.grid_width.data)
-        if file:
+        if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
+
+            # Read the image in-memory
+            img = Image.open(file.stream)
+            img = img.resize((grid_width, int(grid_width * img.size[1] / img.size[0])), Image.NEAREST)
+
+            # Save the resized image to the filesystem
+            img.save(filepath)
+
             emoji_html, processing_time = create_emoji_image(filepath, grid_width)
         else:
             error_message = 'Please upload a file.'
