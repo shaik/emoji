@@ -1,2 +1,0 @@
-# emoji
-emoji art generator
