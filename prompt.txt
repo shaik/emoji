@@ -1,0 +1,33 @@
+"Create a Flask web application named 'Emoji Art' with detailed functionality and a specific file structure:
+
+Functionality:
+
+Users can upload images.
+The app pixelates the image, downscales it, and converts each pixel into the closest matching emoji based on color comparison.
+Adjustable grid size for pixelation, allowing users to choose different levels of detail.
+Libraries and Tools:
+
+Flask for the web framework.
+PIL (Python Imaging Library, using Pillow) for image processing.
+Pandas for data manipulation, particularly for handling emoji color data.
+NumPy for numerical operations, especially in color processing.
+Flask-Limiter for rate limiting to protect against abuse.
+File Structure:
+
+emojiArtKD.py: The main Python file containing Flask application logic.
+templates/: A directory containing HTML templates for the web interface.
+static/: A directory for static files, including CSS for styling. It should have a file like style.css for custom styling of the web pages.
+data/emojiColor.csv: A CSV file containing emoji data with columns for 'Emoji' (the emoji character) and 'Hex Color' (the corresponding color in hexadecimal format).
+requirements.txt: A file listing all the Python dependencies for easy installation, particularly important for deployment.
+CSS and Styling:
+
+A CSS file in the static/ directory to style the web interface, focusing on the layout of the emoji grid and the overall usability and appearance of the application.
+Environment & Deployment:
+
+Configuration for a virtual environment to isolate the app dependencies.
+Considerations for deployment on a cloud platform like PythonAnywhere, including environment variables for sensitive information like secret keys.
+Security and Performance:
+
+Implement secure handling of image uploads.
+Use Flask-Limiter to set rate limits, preventing overuse or abuse of the service.
+The application should be user-friendly, efficient, and ready for deployment, with an interface that allows users to interact seamlessly with the functionality provided."
