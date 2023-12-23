@@ -10,6 +10,7 @@
 <body>
     <div class="container">
         <h1>Upload Image to Create Emoji Art</h1>
+        <h1>Version 1.01</h1>
         <form method="post" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
             {{ form.hidden_tag() }}
             {{ form.file }}
