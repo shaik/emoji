@@ -18,7 +18,7 @@ from scipy.spatial import KDTree
 class Config:
     UPLOAD_FOLDER = 'uploads'
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10 MB limit
-    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
+    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'webp'}
     ALLOWED_GRID_WIDTHS = {10, 24, 32, 40, 64, 80, 100, 120}
     SECRET_KEY = 'your_secret_key'  # Replace with your actual secret key
 
@@ -86,7 +86,7 @@ def allowed_file(filename):
 
 
 class UploadForm(FlaskForm):
-    file = FileField('Image File', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'])])
+    file = FileField('Image File', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif', 'webp'])])
     grid_width = SelectField('Grid Width',
                              choices=[(str(width), str(width)) for width in sorted(Config.ALLOWED_GRID_WIDTHS)])
     submit = SubmitField('Upload')
