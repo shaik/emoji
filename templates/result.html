@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Art Result</title>
+    <style>
+        /* Add any specific styles for your page here */
+        .emoji-art {
+            font-size: 12px;  /* Adjust the size as needed */
+            line-height: normal;
+            letter-spacing: normal;
+        }
+        /* Add more styles as required */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Emoji Art Result</h1>
+        {% if emoji_html %}
+            <div class="emoji-art">
+                {{ emoji_html | safe }}
+            </div>
+        {% else %}
+            <p>No emoji art to display.</p>
+        {% endif %}
+        <a href="{{ url_for('upload_file') }}">Go Back</a>
+    </div>
+</body>
+</html>

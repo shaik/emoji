@@ -16,7 +16,7 @@ def create_folder_structure():
     # List of files to create
     files = {
         "emojiArtKD.py": "# Main Flask application\n",
-        "static/style.css": "/* CSS file for styling */\n",
+        "static/emojiArt.css": "/* CSS file for styling */\n",
         "data/emojiColor.csv": "Emoji,Hex Color\n",
         "requirements.txt": "# List of dependencies\n"
     }

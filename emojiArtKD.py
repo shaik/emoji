@@ -1,9 +1,8 @@
 # Main Flask application
 import os
 import time
-from io import BytesIO
 from werkzeug.utils import secure_filename
-from flask import Flask, request, render_template, send_from_directory
+from flask import Flask, request, render_template, flash, redirect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_wtf import FlaskForm
@@ -11,7 +10,6 @@ from flask_wtf.file import FileAllowed
 from wtforms import FileField, SelectField, SubmitField
 import pandas as pd
 from PIL import Image
-import numpy as np
 from scipy.spatial import KDTree
 
 
@@ -42,6 +40,7 @@ limiter.key_func = get_remote_address
 def ratelimit_handler(e):
     return "Rate limit exceeded. Please try again later.", 429
 
+
 # Function to convert hex to RGB
 def hex_to_rgb(hex_color):
     hex_color = hex_color.lstrip('#')
@@ -64,7 +63,7 @@ def create_emoji_image(filepath, grid_width=32):
     start_time = time.time()
 
     with Image.open(filepath) as img:
-        # img = img.resize((grid_width, int(grid_width * img.size[1] / img.size[0])), 0 ) # Image.Resampling.NEAREST
+        img = img.resize((grid_width, int(grid_width * img.size[1] / img.size[0])), 0)  # Image.Resampling.NEAREST
         img = img.convert("RGB")  # Convert to RGB format if not already
         emoji_html = "<div class='emoji-grid'>"
         for y in range(img.size[1]):
@@ -84,6 +83,47 @@ def create_emoji_image(filepath, grid_width=32):
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+
+@app.route('/upload_cropped', methods=['POST'])
+def upload_cropped_image():
+    try:
+        # Check if the cropped image is part of the request
+        if 'croppedImage' not in request.files:
+            return "No cropped image found", 400
+
+        # Retrieve the file from the request
+        file = request.files['croppedImage']
+
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+
+        if file and allowed_file(file.filename):
+            # Secure the filename and save the file
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+
+            # Extract grid size from the request
+            grid_size = int(request.form.get('gridSize', 32))  # Default to 32 if not provided
+
+            # Use the grid size in your image processing
+            emoji_html, processing_time = create_emoji_image(filepath, grid_size)
+
+            # Render a template to display the emoji art
+            # You might need to adjust this part based on how you want to display the result
+            return render_template('result.html', emoji_html=emoji_html, processing_time=processing_time)
+        else:
+            flash('Invalid file type')
+            return redirect(request.url)
+    except Exception as e:
+        # Log the exception for debugging purposes
+        app.logger.error(f"Error processing cropped image: {e}")
+        flash('An error occurred while processing the image.')
+        return redirect(request.url)
 
 
 class UploadForm(FlaskForm):

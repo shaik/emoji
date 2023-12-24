@@ -6,25 +6,33 @@
     <title>Emoji Art</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='emojiArt.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-
+    <link  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="{{ url_for('static', filename='imageCropper.js') }}"></script>
 </head>
 
 <body>
     <div class="container">
         <h1>Upload Image to Create Emoji Art</h1>
-        <h5>Version 1.03</h5>
-        <form method="post" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
-            {{ form.hidden_tag() }}
-            {{ form.file }}
-            {{ form.grid_width }}
-            {{ form.submit }}
-        </form>
+        <h5>Version 1.12</h5>
 
-        {% if emoji_html %}
-            <p>Processing Time: {{ processing_time }} seconds</p>
-            <p></p>
-            {{ emoji_html | safe }}
-        {% endif %}
+        <input type="file" id="imageInput" accept="image/*">
+        <img id="image" style="display: none;" class="uploadedImage">
+        <div class="centered-container">
+            <label for="gridSizeSelect" class="grid-size-label" id="gridSizeLabel"  style="display: none;">Select Grid Size:</label>
+            <select id="gridSizeSelect" class="grid-size-select" style="display: none;">
+                    <option value="10">10</option>
+                    <option value="24">24</option>
+                    <option value="32">32</option>
+                    <option value="40">40</option>
+                    <option value="64">64</option>
+                    <option value="80">80</option>
+                    <option value="100">100</option>
+                    <option value="120">120</option>
+                </select>
+            <button id="cropButton" style="display: none;" class="emoji-art-button">Create Emoji Art</button>
+        </div>
     </div>
 </body>
 </html>
