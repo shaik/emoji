@@ -14,25 +14,31 @@
 
 <body>
     <div class="container">
-        <img src="{{ url_for('static', filename='logo2.jpg') }}" width="100%">
+        <img id="logoId" src="{{ url_for('static', filename='logo.jpg') }}" width="100%">
         <h1>Upload Image to Create Emoji Art</h1>
-        <h5>Version 1.12</h5>
+        <h5>Version 1.25</h5>
 
         <input type="file" id="imageInput" accept="image/*">
-        <img id="image" style="display: none;" class="uploadedImage">
-        <div class="centered-container">
-            <label for="gridSizeSelect" class="grid-size-label" id="gridSizeLabel"  style="display: none;">Select Grid Size:</label>
-            <select id="gridSizeSelect" class="grid-size-select" style="display: none;">
+        <img id="image" style="display: none;" class="uploadedImage" src="">
+        <div id="formContainer" class="centered-container" style="display: none;">
+            <label for="gridSizeSelect" class="grid-size-label" id="gridSizeLabel" >Select Grid Size:</label>
+            <select id="gridSizeSelect" class="grid-size-select">
                     <option value="10">10</option>
                     <option value="24">24</option>
                     <option value="32">32</option>
                     <option value="40">40</option>
-                    <option value="64">64</option>
+                    <option value="64"  selected="selected">64</option>
                     <option value="80">80</option>
                     <option value="100">100</option>
                     <option value="120">120</option>
                 </select>
-            <button id="cropButton" style="display: none;" class="emoji-art-button">Create Emoji Art</button>
+            <!-- Color Mapping Dropdown -->
+            <label for="colorMappingSelect" class="color-mapping-label" id="colorMappingLabel">Color Mapping:</label>
+            <select id="colorMappingSelect" class="color-mapping-select">
+                <option value="original">Original</option>
+                <option value="normalized">Normalized</option>
+            </select>
+            <button id="cropButton" class="emoji-art-button">Create Emoji Art</button>
         </div>
     </div>
 </body>

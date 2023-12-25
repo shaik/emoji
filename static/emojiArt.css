@@ -50,21 +50,20 @@ select {
 }
 
 /* Styles for the grid size label */
-#gridSizeLabel {
+
+.color-mapping-label, .gridSizeLabel {
     font-size: 16px;
     color: #4CAF50; /* Adjust the color to match your theme */
     margin-bottom: 10px;
-    display: none; /* Initially hidden */
 }
 
 /* Styles for the grid size dropdown */
-.grid-size-select {
+.color-mapping-select, .grid-size-select {
     padding: 10px;
     border-radius: 5px;
     border: 2px solid #4CAF50; /* Border color to match the button */
     font-size: 16px;
     width: auto;
-    display: none; /* Initially hidden */
 }
 
 /* Styles for the crop button */
@@ -76,7 +75,6 @@ select {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    display: none; /* Initially hidden */
 }
 
 /* Button hover effect */

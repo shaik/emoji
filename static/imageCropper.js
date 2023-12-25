@@ -22,10 +22,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     cropper = new Cropper(document.getElementById('image'), {
                         viewMode: 1
                     });
-                    document.getElementById('cropButton').style.display = 'block';
-                    document.getElementById('gridSizeSelect').style.display = 'block';
-                    document.getElementById('gridSizeLabel').style.display = 'block'; // Show the label
-
+                    document.getElementById('logoId').style.display = 'none';
+                    document.getElementById('formContainer').style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             }
@@ -37,11 +35,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Check if gridSizeSelect is available and get its value
             var gridSize = gridSizeSelect ? gridSizeSelect.value : 'default_value'; // Replace 'default_value' with your default
+            var colorMapping = document.getElementById('colorMappingSelect').value;
+
 
             canvas.toBlob(function(blob) {
                 var formData = new FormData();
                 formData.append('croppedImage', blob, 'croppedImage.png');
                 formData.append('gridSize', gridSize); // Include grid size in the FormData
+                formData.append('colorMapping', colorMapping);
+
 
                 $.ajax({
                     url: '/upload_cropped',

@@ -47,30 +47,56 @@ def hex_to_rgb(hex_color):
     return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
 
 
-# Load emoji color data and create k-d tree
-emoji_data = pd.read_csv('data/emojiColor.csv')
-emoji_data['RGB'] = emoji_data['Hex Color'].apply(hex_to_rgb)
-color_tuples = list(emoji_data['RGB'])
-color_tree = KDTree(color_tuples)
+# Global variables for color trees
+emoji_data = None
+color_tree = None
+normalized_color_tree = None
 
 
-def find_closest_emoji(rgb_pixel):
-    distance, index = color_tree.query(rgb_pixel)
+def setup_color_trees():
+    global emoji_data, color_tree, normalized_color_tree
+
+    # Load emoji color data
+    emoji_data = pd.read_csv('data/emojiNormalizedColor.csv')
+
+    # Create tree for original colors
+    emoji_data['RGB'] = emoji_data['Hex Color'].apply(hex_to_rgb)
+    color_tuples = list(emoji_data['RGB'])
+    color_tree = KDTree(color_tuples)
+
+    # Create tree for normalized colors
+    emoji_data['Normalized RGB'] = emoji_data['Normalized Color'].apply(hex_to_rgb)
+    normalized_color_tuples = list(emoji_data['Normalized RGB'])
+    normalized_color_tree = KDTree(normalized_color_tuples)
+
+
+# Call setup_color_trees on startup
+setup_color_trees()
+
+
+def find_closest_emoji(rgb_pixel, tree):
+    distance, index = tree.query(rgb_pixel)
     return emoji_data.iloc[index]['Emoji']
 
 
-def create_emoji_image(filepath, grid_width=32):
+def create_emoji_image(filepath, grid_width, color_mapping):
+    global emoji_data
+
+    # Select the appropriate color tree
+    tree_to_use = normalized_color_tree if color_mapping == 'normalized' else color_tree
+
     start_time = time.time()
 
     with Image.open(filepath) as img:
-        img = img.resize((grid_width, int(grid_width * img.size[1] / img.size[0])), 0)  # Image.Resampling.NEAREST
-        img = img.convert("RGB")  # Convert to RGB format if not already
+        img = img.resize((grid_width, int(grid_width * img.size[1] / img.size[0])), 0)
+        img = img.convert("RGB")
         emoji_html = "<div class='emoji-grid'>"
+
         for y in range(img.size[1]):
             emoji_html += "<div class='emoji-row'>"
             for x in range(img.size[0]):
-                rgb = img.getpixel((x, y))  # This will now be a tuple of length 3
-                emoji = find_closest_emoji(rgb)
+                rgb = img.getpixel((x, y))
+                emoji = find_closest_emoji(rgb, tree_to_use)
                 emoji_html += f"<span>{emoji}</span>"
             emoji_html += "</div>"
         emoji_html += '</div>'
@@ -79,6 +105,7 @@ def create_emoji_image(filepath, grid_width=32):
     processing_time = round(end_time - start_time, 2)
 
     return emoji_html, processing_time
+
 
 
 def allowed_file(filename):
@@ -109,9 +136,10 @@ def upload_cropped_image():
 
             # Extract grid size from the request
             grid_size = int(request.form.get('gridSize', 32))  # Default to 32 if not provided
+            color_mapping = request.form.get('colorMapping', 'original')
 
             # Use the grid size in your image processing
-            emoji_html, processing_time = create_emoji_image(filepath, grid_size)
+            emoji_html, processing_time = create_emoji_image(filepath, grid_size, color_mapping)
 
             # Render a template to display the emoji art
             # You might need to adjust this part based on how you want to display the result
