@@ -46,6 +46,11 @@ def configure_routes(app):
                 filepath = os.path.join(Config.UPLOAD_FOLDER, filename)
                 file.save(filepath)
                 grid_size = int(request.form.get('gridSize', 32))
+                if grid_size in Config.ALLOWED_GRID_WIDTHS:
+                    grid_size = int(grid_size)
+                else:
+                    # Default to size 32 if the input is not valid
+                    grid_size = 32
                 color_mapping = request.form.get('colorMapping', 'original')
                 emoji_html, processing_time = create_emoji_image(filepath, grid_size, color_mapping)
                 return render_template('result.html', emoji_html=emoji_html, processing_time=processing_time)
