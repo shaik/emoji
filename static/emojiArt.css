@@ -38,9 +38,11 @@ select {
 
 .uploadedImage {
     max-width: 100%;  /* Maximum width of 100% of its container */
-    max-height: 80vh; /* Maximum height of 80% of the viewport height */
+    max-height: 400px;
     display: none;    /* Hide it by default */
     margin: auto;     /* Center the image */
+    border-color: blue;
+    border-width: thick;
 }
 
 /* Styles for the centered container */
@@ -81,3 +83,5 @@ select {
 .emoji-art-button:hover {
     background-color: #45a049;
 }
+
+
